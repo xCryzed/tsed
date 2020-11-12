@@ -42,7 +42,7 @@ export class AjvValidationPipe extends ValidationPipe implements IPipe {
     return metadata.paramType === ParamTypes.PATH && !metadata.isPrimitive;
   }
 
-  transform(value: any, metadata: ParamMetadata): any {
+  async transform(value: any, metadata: ParamMetadata): Promise<any> {
     if (this.skip(value, metadata)) {
       return value;
     }
@@ -58,7 +58,7 @@ export class AjvValidationPipe extends ValidationPipe implements IPipe {
     const schema = getJsonSchema(metadata);
 
     if (schema) {
-      const valid = this.ajv.validate(schema, value);
+      const valid = await this.ajv.validate(schema, value);
 
       if (!valid) {
         throw this.formatter.transform(this.ajv.errors!, {
